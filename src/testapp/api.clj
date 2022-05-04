@@ -29,6 +29,6 @@
 
     {:status 200
      :headers {"content-type" "application/json"}
-     :body (str body)})
+     :body (json/write-str ())})
   )
 
