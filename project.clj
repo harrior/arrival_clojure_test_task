@@ -8,10 +8,14 @@
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/clojurescript "1.10.773"]
                  [org.clojure/core.async  "0.4.500"]
-                 [reagent "0.10.0"]]
+                 [reagent "0.10.0"]
+                 [hiccup "1.0.5"]
+                 [cljs-http "0.1.46"]]
   
   :plugins [[lein-figwheel "0.5.20"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+
+  :resource-paths ["resources"]
 
   :cljsbuild {:builds
               [{:id "dev"
@@ -20,30 +24,27 @@
                            :open-urls ["http://localhost:3449/index.html"]}
 
                 :compiler {:main testapp.core
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/testapp.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :asset-path "static/js/out"
+                           :output-to "resources/public/static/js/testapp.js"
+                           :output-dir "resources/public/static/js/out"
                            :source-map-timestamp true
                            :preloads [devtools.preload]}}
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/testapp.js"
+                :compiler {:output-to "resources/public/static/js/testapp.js"
                            :main testapp.core
                            :optimizations :advanced
                            :pretty-print false}}]}
 
-    :figwheel {:css-dirs ["resources/public/css"] ;; watch and update CSS
-               }
+    ;; :figwheel {:css-dirs ["resources/public/static/css"] ;; watch and update CSS
+              ;;  }
   
   :main ^:skip-aot testapp.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
-                      ;;  :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
                        }
              :dev {:dependencies [[binaryage/devtools "1.0.0"]
                                   [figwheel-sidecar "0.5.20"]]
-                   ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
-                   ;; need to add the compiled assets to the :clean-targets
-                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                   :clean-targets ^{:protect false} ["resources/public/static/js"
                                                      :target-path]}})

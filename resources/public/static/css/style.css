@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+/* Genral options */
+body {
+    max-width: 800px;
+    width: 800px;
+    margin:auto;
+
+    font-family: 'Roboto', sans-serif;
+
+}
+
+/* Navigation list */
+.menu_item {
+    display: block;
+    width: 100px;
+    border: 1px dotted;
+    border-radius: 10px;
+
+    cursor: pointer;
+    line-height: 25px;
+    text-align: center;
+    transition: all 0.5s;
+}
+
+.meni_item--selected {
+    background-color: black;
+    color: white;
+}
+.menu_item:hover {
+    background-color: lightgray;
+}
+.menu_items {
+    display: flex;
+    padding: 0;
+    gap: 20px;
+
+    list-style: none;
+}
+
+
+/* Body */
+/* Form */
+
+.order-form {
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+.order-form label {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    width: 500px;
+    gap: 10px;
+}
+
+.order-form input,textarea {
+    width: 400px;
+}
+
+/* List Items */
+.order-item {
+    display: block;
+    margin: 10px 0;
+    border: 1px dotted black;
+    border-radius: 10px;
+}
+
+.order-item_title {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 10px;
+    border-bottom: 1px solid black;
+}
+
+.order-item_body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.order-item_body p {
+    padding: 0;
+    margin: 0;
+}
+
+/* Footer */
+footer {
+    line-height: 80px;
+    text-align: center;
+}
