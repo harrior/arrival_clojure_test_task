@@ -1,44 +1,64 @@
 # testapp
 
-FIXME: description
+TestApp is a Service Platform Test Task for Clojure Developer.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Use `git clone` to clone this repo.
 
 ## Usage
+    $ lein run
+or 
 
-FIXME: explanation
+    $ lein uberjar
+    $ java -jar testapp-0.1.0-SNAPSHOT-standalone.jar
 
-    $ java -jar testapp-0.1.0-standalone.jar [args]
+App will be started on http://localhost:8080/testapp
 
-## Options
+## Description
+This app consists of two part - frontend and backend.
+Frontend created with using ClojureScript, Reagent and Re-Frame.
+Frontend gives an interface for read and create new orders. Orders storaged on backend. 
 
-FIXME: listing of options this app accepts.
+Connection with backend relised throught HTTP and RESTful API.
 
-## Examples
+Backend created with using Clojure, Compojure (as a router) and web-server Jetty.
+Realised two endpoints:
+>GET "/api/order/list"
 
-...
+Return list of all orders from storage on JSON format.
 
-### Bugs
+Exampele:
+```
+[
+    {
+        "id": 0,
+        "title": "Fix phone",
+        "description": "Some trouble with phone. Fixed!",
+        "customer": "Petya",
+        "executor": "Ivan",
+        "execution_date": "2022-05-10"
+    },
+    {
+        "id": 1,
+        "title": "Problem with AD",
+        "description": "Some problem with AD. Check it.",
+        "customer": "Tanya",
+        "executor": "Ivan",
+        "execution_date": "2022-04-12"
+    }
+]
+```
 
-...
+>POST "/api/order" 
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+Create new oreder in database. Sample or request:
 
-## License
-
-Copyright © 2022 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+```
+{
+    "title": "New order",
+    "description": "New description",
+    "customer": "Soul GoodMan",
+    "executor": "Ivan",
+    "execution_date": "11-05-2022"
+}```

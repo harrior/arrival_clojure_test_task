@@ -25,8 +25,7 @@
   ;; Get actual orders throught API
   (async/go
     (let [response (async/<! (http/get GET_POSTS_ENDPOINT))]
-      (reset! dataset (js->clj (response :body)))
-      (js/console.log (@dataset)))))
+      (reset! dataset (js->clj (response :body))))))
 
 (defn send-new-order [order]
   ;; Send new order to backend
