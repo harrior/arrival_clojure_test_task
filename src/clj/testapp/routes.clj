@@ -4,13 +4,13 @@
             [testapp.handlers :as handlers]))
 
 (defroutes app
-  (GET "/" request (handlers/home request))
-  (GET "/testapp" request (handlers/index request))
-  (GET "/order/list" request (handlers/list-order request))
-  (POST "/order" request (handlers/new-order request))
+  (GET "/" [] handlers/home)
+  (GET "/testapp" [] handlers/index)
+  (GET "/api/order/list" [] handlers/list-order)
+  (POST "/api/order" request (handlers/new-order request))
 
-  ;; (GET "/order/:id" [id :as request] (api/get-order request))
-  ;; (PUT "/order/:id" [id :as request] (api/edit-order request))
-  ;; (DELETE "/order/:id" [id :as request] (api/delete-order request))
+  ;; (GET "/api/order/:id" [id :as request] (api/get-order request))
+  ;; (PUT "/api/order/:id" [id :as request] (api/edit-order request))
+  ;; (DELETE "/api/order/:id" [id :as request] (api/delete-order request))
   (resources "/")
   (not-found "Page not found"))

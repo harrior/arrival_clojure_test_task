@@ -8,6 +8,11 @@
 
 (enable-console-print!)
 
+;; CONST
+(def NEW_POST_ENDPOINT "http://localhost:8080/api/order")
+(def GET_POSTS_ENDPOINT "http://localhost:8080/api/order/list")
+(def TIMEOUT 1000)
+
 ;; SPA State
 ;; Dataset
 (defonce dataset (r/atom []))
@@ -19,16 +24,14 @@
 (defn update-order-list []
   ;; Get actual orders throught API
   (async/go
-    (let [response (async/<! (http/get "http://localhost:8080/order/list"))]
+    (let [response (async/<! (http/get GET_POSTS_ENDPOINT))]
       (reset! dataset (js->clj (response :body)))
       (js/console.log (@dataset)))))
 
 (defn send-new-order [order]
   ;; Send new order to backend
-  (http/post "http://localhost:8080/order" {:json-params order}))
+  (http/post NEW_POST_ENDPOINT {:json-params order}))
 
-;; Set auto update data
-(defonce autoupdate (js/setInterval (fn [] (update-order-list)) 1000))
 
 ;; Elements of page
 (defn order-item
@@ -44,7 +47,7 @@
 
 ;; Forms
 (defonce form-values (r/atom {}))
-;; TODO make template for input
+
 (defn input-field
   [name]
   (let [key (keyword (str/lower-case name))]
@@ -131,7 +134,7 @@
      "add" (add-form-page))])
 
 (defn index []
-  (update-order-list)
+  (js/setInterval (fn [] (update-order-list)) TIMEOUT)
   [:main
    [header]
    [main]

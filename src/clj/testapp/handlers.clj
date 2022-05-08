@@ -2,11 +2,10 @@
   (:require [ring.util.response :as response]
             [clojure.data.json :as json]
             [testapp.db :as db]
-            ;; [config.core :refer [env]]
             [hiccup.page :refer [html5 include-css include-js]]))
 
 (defn home
-  ;; Redirect to userpage
+  ;; Redirect to main page
   [request]
   (ring.util.response/redirect "http://localhost:8080/testapp"))
 
@@ -39,10 +38,8 @@
 (defn new-order
   ;; Create new order 
   [request]
-  (let [body (slurp (request :body))]
-    (db/create-record (json/read-str body))
-
+  (let [order (slurp (request :body))]
+    (db/create-record (json/read-str order))
     {:status 200
      :headers {"content-type" "application/json"}
-     :body (json/write-str ())}))+
-
+     :body (json/write-str order)}))
