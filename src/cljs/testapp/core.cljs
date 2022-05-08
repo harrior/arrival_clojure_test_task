@@ -6,7 +6,7 @@
      [cljs-http.client :as http]
      [cljs.core.async :as async]))
 
-(enable-console-print!)
+;; (enable-console-print!)
 
 ;; CONST
 (def NEW_POST_ENDPOINT "http://localhost:8080/api/order")
@@ -35,11 +35,12 @@
 ;; Elements of page
 (defn order-item
   [order]
+  ^{:key (:id order)}
   [:div.order-item
    [:div.order-item_title
-    [:spin (str "Date: " (:execution_date order))]
-    [:spin (str "Customer: " (:customer order))]
-    [:spin (str "Executor: " (:executor order))]]
+    [:span (str "Date: " (:execution_date order))]
+    [:span (str "Customer: " (:customer order))]
+    [:span (str "Executor: " (:executor order))]]
    [:div.order-item_body
     [:p (str "Title: " (:title order))]
     [:p (str "Description: " (:description order))]]])
