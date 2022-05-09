@@ -11,7 +11,8 @@
                  [reagent "0.10.0"]
                  [re-frame "1.3.0-rc3"]
                  [hiccup "1.0.5"]
-                 [day8.re-frame/http-fx-alpha "0.0.2"]]
+                 [cljs-ajax "0.7.5"]
+                 [day8.re-frame/http-fx "0.2.4"]]
 
   :plugins [[lein-figwheel "0.5.20"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
@@ -19,12 +20,14 @@
   :source-paths ["src/clj" "src/cljs"]
 
   :resource-paths ["resources"]
+  
 
   :cljsbuild {:builds
               [{:id "dev"
                 :source-paths ["src/cljs"]
-                :figwheel {:on-jsload "testapp.core/on-js-reload"
-                           :open-urls ["http://localhost:3449/index.html"]}
+                :figwheel {
+                           :on-jsload "testapp.core/on-js-reload"
+                           :open-urls ["http://localhost:3000/index.html"]}
 
                 :compiler {:main testapp.core
                            :asset-path "static/js/out"
@@ -39,7 +42,8 @@
                            :optimizations :advanced
                            :pretty-print false}}]}
 
-  :figwheel {:css-dirs ["resources/public/static/css"] ;; watch and update CSS
+  :figwheel {
+             :css-dirs ["resources/public/static/css"] ;; watch and update CSS
              }
 
   :main ^:skip-aot testapp.core

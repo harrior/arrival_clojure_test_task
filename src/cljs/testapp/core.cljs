@@ -3,10 +3,9 @@
    [reagent.core :as r]
    [reagent.dom :as rdom]
    [clojure.string :as str]
-    ;;  [cljs-http.client :as http]
-    ;;  [cljs.core.async :as async]
+   [ajax.core :as ajax]
    [re-frame.core :as rf]
-   [day8.re-frame.http-fx-alpha]))
+   [day8.re-frame.http-fx]))
 
 (enable-console-print!)
 
@@ -14,9 +13,8 @@
 (def HOSTNAME "http://localhost:8080")
 (def NEW_POST_ENDPOINT (str HOSTNAME "/api/order"))
 (def GET_POSTS_ENDPOINT (str HOSTNAME "/api/order/list"))
-(def TIMEOUT 1000)
 
-;; SPA State
+;;  Events
 (rf/reg-event-db
  :initialize
  (fn [_ _]
@@ -30,22 +28,57 @@
    (assoc db :current-page (keyword new-page))))
 
 (rf/reg-event-db
+ :clean-form
+ (fn [db _]
+   (assoc db :form-state {})))
+
+(rf/reg-event-db
  :set-value
  (fn [db [_ field value]]
    (assoc-in db [:form-state (keyword field)] value)))
 
+(rf/reg-event-db
+ :good-http-result
+ (fn [db [_ orders]]
+   (assoc db :orders orders)))
+
+(rf/reg-event-db :bad-http-result (fn [_ _]))
+
 (rf/reg-event-fx
  :request-orders
+ (fn [{:keys [db]} _]
+   {:db   (assoc db :show-twirly true)
+    :http-xhrio {:method          :get
+                 :uri             GET_POSTS_ENDPOINT
+                 :timeout         8000                                          
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success      [:good-http-result]
+                 :on-failure      [:bad-http-result]}}))
+
+(rf/reg-event-db 
+ :success-post-result 
  (fn [_ _]
-   {:http {:action :GET
-           :url "http://localhost:8080/api/order/list"
-           :path [:orders]}}))
+   (rf/dispatch [:request-orders])))
 
+(rf/reg-event-db :failure-post-result (fn [_ _]))
 
+(rf/reg-event-fx
+ :add-order
+ (fn [db _]
+    {:http-xhrio {:method          :post
+                  :uri             NEW_POST_ENDPOINT
+                  :params          (get-in db [:db :form-state])
+                  :timeout         5000
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:success-post-result]
+                  :on-failure      [:failure-post-result]}}))
+;; Subscribes
 (rf/reg-sub
  :orders
  (fn [db _]
-   (db :orders)))
+   (db :orders))
+ )
 
 (rf/reg-sub
  :current-page
@@ -56,25 +89,6 @@
  :value
  (fn [db [_ field]]
    (get-in db [:form-state field])))
-
-
-;; Dataset
-(defonce dataset (r/atom []))
-;; current-page may be list or add
-;; (defonce current-page (r/atom :list-orders))
-
-
-
-;; ;; JSON Iteractions
-;; (defn update-order-list []
-;;   ;; Get actual orders throught API
-;;   (async/go
-;;     (let [response (async/<! (http/get GET_POSTS_ENDPOINT))]
-;;       (reset! dataset (js->clj (response :body))))))
-
-;; (defn send-new-order [order]
-;;   ;; Send new order to backend
-;;   (http/post NEW_POST_ENDPOINT {:json-params order}))
 
 
 ;; Elements of page
@@ -91,8 +105,6 @@
     [:p (str "Description: " (:description order))]]])
 
 ;; Forms
-(defonce form-values (r/atom {}))
-
 (defn input-field
   [name]
   (let [field (keyword (str/lower-case name))]
@@ -120,16 +132,11 @@
                :value @(rf/subscribe [:value field])
                :on-change #(rf/dispatch [:set-value field (-> % .-target .-value)])}]]]))
 
-(defn validate-form [values]
-  ;; Once I'll make form validator
-  )
-
 ;; Page sections
 (defn header []
   [:header
    [:nav.menu
     [:ul.menu_items
-    ;;  TODO make button component
      [:li [:a.menu_item {:class (when (=  @(rf/subscribe [:current-page]) :add-order) "meni_item--selected")
                          :on-click #(rf/dispatch [:set-current-page :add-order])}
            "Add order"]]
@@ -141,8 +148,6 @@
   [:footer "Test Task for Arrival (c) Sizov Sergey 2022"])
 
 ;; Pages
-
-
 (defn add-form-page []
   [:form.order-form
    (input-field "Customer")
@@ -152,10 +157,8 @@
    (date-field "Execution_Date")
    [:button {:on-click (fn [e] (do (.preventDefault e)
                                    (rf/dispatch [:add-order])
-                                ;;  (validate-form @form-values)
-                                ;;  (send-new-order @form-values)
-                                ;;  (reset! form-values {})
-                                ;;  (rf/dispatch [:set-current-page :list-orders])
+                                   (rf/dispatch [:clean-form])
+                                   (rf/dispatch [:set-current-page :list-orders])
                                    ))}
     "Add"]])
 
@@ -163,25 +166,22 @@
   (for [order (reverse @(rf/subscribe [:orders]))]
     (order-item order)))
 
-;; Entry Point
-
 (defn main []
   [:main
    (case @(rf/subscribe [:current-page])
-    ;; @current-page
      :list-orders (order-list-page)
      :add-order (add-form-page))])
 
-(rf/dispatch-sync [:initialize])
+;; Entry Point
+
 (defn index []
-  ;; (js/setInterval (fn [] (rf/dispatch [:orders])) TIMEOUT)
   (rf/dispatch [:request-orders])
   [:main
    [header]
    [main]
    [footer]])
 
-
+(rf/dispatch-sync [:initialize])
 (rdom/render [index] (js/document.getElementById "app"))
 
 (defn on-js-reload []

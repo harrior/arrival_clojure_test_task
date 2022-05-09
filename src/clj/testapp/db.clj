@@ -19,5 +19,5 @@
 
 (defn create-record
   [record]
-  ;; TODO make data vaidator/ convert string to keyword
+  ;; TODO make data vaidator
   (reset! dataset (conj @dataset (assoc record :id (count @dataset)))))
