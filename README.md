@@ -16,19 +16,19 @@ or
 App will be started on http://localhost:8080/testapp
 
 ## Description
-This app consists of two part - frontend and backend.
-Frontend created with using ClojureScript, Reagent and Re-Frame.
-Frontend gives an interface for read and create new orders. Orders storaged on backend. 
+This application consists of two parts - frontend and backend.
+The frontend is built using ClojureScript, Reagent and Re-Frame.
+Frontend provides an interface for reading and creating new orders. Orders are stored on the server.
 
-Connection with backend relised throught HTTP and RESTful API.
+Connection with backend released through HTTP and RESTful API.
 
 Backend created with using Clojure, Compojure (as a router) and web-server Jetty.
 Realised two endpoints:
 >GET "/api/order/list"
 
-Return list of all orders from storage on JSON format.
+Return a list of all orders from storage on JSON format.
 
-Exampele:
+Examples:
 ```
 [
     {
@@ -52,7 +52,7 @@ Exampele:
 
 >POST "/api/order" 
 
-Create new oreder in database. Sample or request:
+Create new order in database. Sample request:
 
 ```
 {

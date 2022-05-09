@@ -6,12 +6,12 @@
 
 (defn home
   ;; Redirect to main page
-  [request]
+  [_]
   (ring.util.response/redirect "http://localhost:8080/testapp"))
 
 (defn index
   ;; Main page
-  [request]
+  [_]
   (html5
    [:head
     [:meta {:charset "utf-8"}]
@@ -25,12 +25,11 @@
      [:p "please run "
       [:b "lein figwheel"]
       " in order to start the compiler"]]
-    (include-js "/static/js/testapp.js")
-    ]))
+    (include-js "/static/js/testapp.js")]))
 
 (defn list-order
   ;; Get all orders list
-  [request]
+  [_]
   {:status 200
    :headers {"content-type" "application/json"}
    :body (json/write-str (db/select-all))})

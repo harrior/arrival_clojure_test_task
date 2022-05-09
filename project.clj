@@ -9,8 +9,9 @@
                  [org.clojure/clojurescript "1.10.773"]
                  [org.clojure/core.async  "0.4.500"]
                  [reagent "0.10.0"]
+                 [re-frame "1.3.0-rc3"]
                  [hiccup "1.0.5"]
-                 [cljs-http "0.1.46"]]
+                 [day8.re-frame/http-fx-alpha "0.0.2"]]
 
   :plugins [[lein-figwheel "0.5.20"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
